@@ -13,7 +13,7 @@ Optimal Stopping + Signatures + fBm + Primal/Dual methods
 Репозиторий авторов предоставляет рабочую реализацию базовой задачи
 
 $$
-\sup_\tau E\bigl[B^H_\tau\bigr].
+\sup_\tau E[B^H_\tau].
 $$
 
 ---
@@ -93,7 +93,7 @@ Theory vs Signature vs Buy-and-Hold
 
 **Этап 5 — эмпирика.**
 - [ ] загрузка и подготовка данных S&P 500;
-- [ ] walk-forward: помесячные $(\hat\mu,\hat H)$, режимы, $\tau^*$;
+- [ ] walk-forward: помесячные $(\hat\mu,\hat H)$, режимы, $\tau^{\ast}$;
 - [ ] распределение месяцев по режимам;
 - [ ] метрики и сравнение с бенчмарками, доверительные интервалы.
 
