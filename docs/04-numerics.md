@@ -40,12 +40,12 @@ Reward, signature и вся backward-рекурсия считаются уже 
 
 ## 4.2. Численная оценка границ
 
-Для фиксированного $H$ перебираются значения $\mu$. Для каждой пары $(\mu,H)$ обучается stopping policy, и на независимых тестовых траекториях собираются $\tau^{\ast}_1,\dots,\tau^{\ast}_M$. Считаются три диагностики:
+Для фиксированного $H$ перебираются значения $\mu$. Для каждой пары $(\mu,H)$ обучается stopping policy, и на независимых тестовых траекториях собираются $\tau_1^{\ast},\dots,\tau_M^{\ast}$. Считаются три диагностики:
 
 $$
-\hat p_0(\mu,H) = \frac{1}{M}\sum_i \mathbf{1}\{\tau^{\ast}_i = 0\},
+\hat p_0(\mu,H) = \frac{1}{M}\sum_i \mathbf{1}\{\tau_i^{\ast} = 0\},
 \qquad
-\hat p_1(\mu,H) = \frac{1}{M}\sum_i \mathbf{1}\{\tau^{\ast}_i = T\},
+\hat p_1(\mu,H) = \frac{1}{M}\sum_i \mathbf{1}\{\tau_i^{\ast} = T\},
 \qquad
 \hat V(\mu,H).
 $$

@@ -16,23 +16,23 @@ continuation value зависит от всей истории → истори�
 
 ## 3.1. Snell envelope и Bellman recursion
 
-Для reward process $Z_t$ Snell envelope:
+Для reward process $Z_t$ Snell envelope (супремум здесь понимается как существенный, ess sup):
 
 $$
-Y_t = \mathrm{ess\,sup}_{\tau\ge t} E[Z_\tau\mid\mathcal{F}_t].
+Y_t = \sup_{\tau\ge t} E[Z_\tau\mid\mathcal F_t].
 $$
 
 В дискретном времени выполняется рекурсия (Dynamic Programming Principle):
 
 $$
 \boxed{Y_{t_N} = Z_{t_N},\qquad
-Y_{t_k} = \max\{Z_{t_k}, E[Y_{t_{k+1}}\mid\mathcal{F}_{t_k}]\}.}
+Y_{t_k} = \max\{Z_{t_k}, E[Y_{t_{k+1}}\mid\mathcal F_{t_k}]\}.}
 $$
 
 Два действия — STOP или CONTINUE. При остановке получаем $Z_t$; при продолжении — **continuation value**
 
 $$
-\boxed{C_t = E[Y_{t+1}\mid\mathcal{F}_t].}
+\boxed{C_t = E[Y_{t+1}\mid\mathcal F_t].}
 $$
 
 Правило решения:
@@ -120,12 +120,12 @@ $$
 Для фиксированной пары $(\mu,H)$:
 
 1. генерируется $M$ независимых траекторий fBm $B^{H,(1)},\dots,B^{H,(M)}$;
-2. строится процесс $X^{(i)}_t = \mu t + B^{H,(i)}_t$;
+2. строится процесс $X_t^{(i)} = \mu t + B_t^{H,(i)}$;
 3. запускается backward algorithm.
 
 На последнем шаге $t_N=T$ остановка обязательна: $Y_{t_N}=Z_{t_N}$. Затем идём назад по $t_{N-1},\dots,t_0$, и на каждом шаге:
 
-1. берём историю траектории $X^{(i)}_{[0,t]}$;
+1. берём историю траектории $X_{[0,t]}^{(i)}$;
 2. считаем $\mathrm{Sig}^{\le K}$;
 3. регрессией по MC-траекториям обучаем continuation value $\hat C_t = \beta_t^\top\mathrm{Sig}^{\le K}(X_{[0,t]})$;
 4. сравниваем текущий reward и continuation value;
@@ -152,12 +152,12 @@ $$
 
 ## 3.7. Оценка значения задачи: primal и dual
 
-Обученную policy применяют к **независимым** тестовым траекториям (не тем, на которых обучались коэффициенты — иначе оценка смещена вверх). Для каждой получаем $\tau^{\ast}_i$ и
+Обученную policy применяют к **независимым** тестовым траекториям (не тем, на которых обучались коэффициенты — иначе оценка смещена вверх). Для каждой получаем $\tau_i^{\ast}$ и
 
 $$
 \boxed{
 \hat V_{\text{primal}}(\mu,H)
-= \frac{1}{M}\sum_{i=1}^{M}(\mu\tau^{\ast}_i + B^{H,(i)}_{\tau^{\ast}_i}).
+= \frac{1}{M}\sum_{i=1}^{M}(\mu\tau_i^{\ast} + B_{\tau_i^{\ast}}^{H,(i)}).
 }
 $$
 

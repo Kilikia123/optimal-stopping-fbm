@@ -89,7 +89,7 @@ $$
 \boxed{
 \tilde X_u = \frac{\ln(S_{Nu}/S_0)}{\hat\sigma N^{\hat H}}
 \approx
-\hat\mu u + B^{\hat H}_u ,
+\hat\mu u + B_u^{\hat H} ,
 \qquad u\in[0,1].
 }
 $$
@@ -114,7 +114,7 @@ $$
 
 ## 5.7. Построение практической stopping model
 
-Для оценённой пары $(\hat\mu,\hat H)$ генерируются MC-траектории $X^{(i)}_u = \hat\mu u + B^{\hat H,(i)}_u$, на них считаются signatures и обучается backward stopping model:
+Для оценённой пары $(\hat\mu,\hat H)$ генерируются MC-траектории $X_u^{(i)} = \hat\mu u + B_u^{\hat H,(i)}$, на них считаются signatures и обучается backward stopping model:
 
 ```text
 synthetic trajectories → Signatures → Continuation Value → STOP/CONTINUE policy
