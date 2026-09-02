@@ -1,0 +1,80 @@
+[project]
+name = "optimal_stopping_fbm"
+version = "1.0.0"
+description = "ML project"
+authors = [
+    { name = "Arman Brsikyan", email = "brsikyanarm@gmail.com" },
+]
+requires-python = ">=3.12,<4.0"
+license = "MIT"
+
+dependencies = [
+
+]
+
+[dependency-groups]
+dev = [
+    "ruff==0.15.2",
+    "black[jupyter]==25.1.0",
+    "isort==6.0.1",
+    "jupyter==1.0.0",
+    "ipython==8.37.0",
+]
+
+[tool.uv]
+
+[build-system]
+requires = ["hatchling", "wheel"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+fix = true
+unsafe-fixes = true
+
+line-length = 120
+
+target-version = "py312"
+
+cache-dir = "~/.cache/ruff"
+
+fixable = ["ALL"]
+unfixable = ["F841"]
+
+exclude = [
+    ".git",
+    ".ruff_cache",
+    "venv",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "EM",
+    "FBT",
+    "TRY003",
+    "D1",
+    "D211",
+    "D213",
+    "G004",
+    "FA102",
+    "S101",
+    "I",
+]
+
+[tool.ruff.lint.isort]
+no-lines-before = ["standard-library", "local-folder"]
+known-third-party = []
+known-local-folder = []
+lines-after-imports = 2
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
