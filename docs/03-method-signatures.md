@@ -135,12 +135,12 @@ $$
 
 ---
 
-## 3.6. Stopping policy и момент $\tau^*$
+## 3.6. Stopping policy и момент остановки
 
 Результат обучения для фиксированной пары $(\mu,H)$ — правило
 
 $$
-\boxed{\;\pi_{\mu,H}(\text{история}) \;\longrightarrow\; \{\text{STOP},\ \text{CONTINUE}\}.\;}
+\boxed{\;\pi_{\mu,H}\bigl(X_{[0,t]}\bigr) \;\longrightarrow\; \{\text{STOP},\ \text{CONTINUE}\}.\;}
 $$
 
 Различие, которое важно не путать:
