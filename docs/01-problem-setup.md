@@ -75,8 +75,7 @@ $$
 
 $$
 \sup_{\tau} E[a\tau + \sigma B^H_\tau]
-=
-\sigma\sup_{\tau} E[\frac{a}{\sigma}\tau + B^H_\tau].
+= \sigma \sup_{\tau} E\left[\frac{a}{\sigma}\tau + B^H_\tau\right].
 $$
 
 Деление на $\sigma>0$ не меняет аргмаксимум. Вводя **нормированный drift** $\mu = a/\sigma$, получаем центральную задачу работы:
