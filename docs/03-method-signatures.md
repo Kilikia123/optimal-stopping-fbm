@@ -14,7 +14,13 @@ continuation value зависит от всей истории → истори�
 
 ## 3.1. Snell envelope и Bellman recursion
 
-Для reward process $Z_t$ (интегрируемого: $E[\max_k|Z_{t_k}|]<\infty$, что для гауссовского $Z$ выполнено) Snell envelope $Y_t = \operatorname{ess\,sup}_{\tau\ge t} E[Z_\tau\mid\mathcal F_t]$ удовлетворяет рекурсии:
+Пусть reward process $Z_t$ интегрируем: $E[\max_k |Z_{t_k}|]<\infty$ — для гауссовского $Z$ это выполнено. Snell envelope определяется как
+
+$$
+Y_t = \sup_{\tau\ge t} E[Z_\tau \mid \mathcal F_t]
+$$
+
+(супремум здесь понимается как существенный, ess sup) и удовлетворяет рекурсии:
 
 $$
 \boxed{Y_{t_N} = Z_{t_N},\qquad
@@ -88,7 +94,7 @@ $$
 E[Z_\tau]=E[Z_\tau-\mathcal M_\tau]\le E\Big[\max_{k=0,\dots,N}(Z_{t_k}-\mathcal M_{t_k})\Big].
 $$
 
-Правая часть от $\tau$ не зависит — мы заменили «остановиться в момент $\tau$» на «взять максимум по всем моментам сразу», что заведомо не хуже. Значит после супремума по $\tau$
+Правая часть от $\tau$ не зависит — мы заменили остановку в момент $\tau$ на максимум по всем моментам сразу, что заведомо не хуже. Значит после супремума по $\tau$
 
 $$
 \boxed{V^{\ast}\ \le\ \inf_{\mathcal M}\ E\Big[\max_k (Z_{t_k}-\mathcal M_{t_k})\Big],}
