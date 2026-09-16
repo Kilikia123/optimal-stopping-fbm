@@ -16,7 +16,7 @@
 
 $$
 v_\pi(\mu,H)
-=\mathbb{E}\left[\mu\tau_\pi+B^H_{\tau_\pi}\right].
+=\mathbb{E}[\mu\tau_\pi+B^H_{\tau_\pi}].
 $$
 
 Именно это число оценивает независимый тест из $M=100\,000$ траекторий.
@@ -24,7 +24,7 @@ $$
 
 $$
 V^*(\mu,H)
-=\sup_{\tau}\mathbb{E}\left[\mu\tau+B^H_\tau\right].
+=\sup_{\tau}\mathbb{E}[\mu\tau+B^H_\tau].
 $$
 
 Все интервалы ниже относятся к стоимости **зафиксированных обученных стратегий**.
@@ -71,22 +71,22 @@ $$
 
 $$
 I_V=
-\left[
+[
 \overline Y-t_{M-1;\,1-\alpha/2}SE,
 \quad
 \overline Y+t_{M-1;\,1-\alpha/2}SE
-\right].
+].
 $$
 
 Для $M=100\,000$ и доверия 95% множитель практически равен $1.96$:
 
 $$
 I_V\approx
-\left[
+[
 \overline Y-1.96SE,
 \quad
 \overline Y+1.96SE
-\right].
+].
 $$
 
 **Пример.** Если $\overline Y=0.030$ и $SE=0.002$, то
@@ -177,14 +177,14 @@ $\mu_jT$.
 
 $$
 b_1^\varepsilon(H)
-=\max\left\{\mu_j\in\mathcal{G}_\mu:
- f_1(\mu_j)\le\varepsilon\right\},
+=\max\{\mu_j\in\mathcal{G}_\mu:
+ f_1(\mu_j)\le\varepsilon\},
 $$
 
 $$
 b_2^\varepsilon(H)
-=\min\left\{\mu_j\in\mathcal{G}_\mu:
- f_2(\mu_j)\le\varepsilon\right\}.
+=\min\{\mu_j\in\mathcal{G}_\mu:
+ f_2(\mu_j)\le\varepsilon\}.
 $$
 
 Здесь предполагается, что соответствующие множества непусты. Обозначение $b_i$
@@ -217,9 +217,9 @@ $$
 Введём множества определённо и возможно входящих узлов:
 
 $$
-A_i=\left\{\mu_j:U_{i,j}\le\varepsilon\right\},
+A_i=\{\mu_j:U_{i,j}\le\varepsilon\},
 \qquad
-B_i=\left\{\mu_j:L_{i,j}\le\varepsilon\right\}.
+B_i=\{\mu_j:L_{i,j}\le\varepsilon\}.
 $$
 
 На событии общего покрытия истинное пороговое множество $C_i$ удовлетворяет
