@@ -53,10 +53,10 @@ $$
 $$
 s^2=\frac{1}{M-1}\sum_{i=1}^{M}(Y_i-\overline Y)^2,
 \qquad
-\operatorname{SE}=\frac{s}{\sqrt{M}}.
+SE=\frac{s}{\sqrt{M}}.
 $$
 
-Здесь $s$ характеризует разброс **отдельных наград**, а $\operatorname{SE}$ —
+Здесь $s$ характеризует разброс **отдельных наград**, а $SE$ —
 погрешность **их среднего**. При неизменной стратегии увеличение размера теста
 в четыре раза уменьшает стандартную ошибку примерно вдвое.
 
@@ -72,9 +72,9 @@ $$
 $$
 I_V=
 \left[
-\overline Y-t_{M-1;\,1-\alpha/2}\operatorname{SE},
+\overline Y-t_{M-1;\,1-\alpha/2}SE,
 \quad
-\overline Y+t_{M-1;\,1-\alpha/2}\operatorname{SE}
+\overline Y+t_{M-1;\,1-\alpha/2}SE
 \right].
 $$
 
@@ -83,13 +83,13 @@ $$
 $$
 I_V\approx
 \left[
-\overline Y-1.96\operatorname{SE},
+\overline Y-1.96SE,
 \quad
-\overline Y+1.96\operatorname{SE}
+\overline Y+1.96SE
 \right].
 $$
 
-**Пример.** Если $\overline Y=0.030$ и $\operatorname{SE}=0.002$, то
+**Пример.** Если $\overline Y=0.030$ и $SE=0.002$, то
 
 $$
 I_V\approx[0.02608;\;0.03392].
@@ -130,9 +130,9 @@ $\mu$. Для текущей полной сетки $J=46\cdot1301=59\,846$.
 В каждом узле $j$ строится интервал
 
 $$
-L_j=\overline Y_j-q_J\operatorname{SE}_j,
+L_j=\overline Y_j-q_JSE_j,
 \qquad
-U_j=\overline Y_j+q_J\operatorname{SE}_j,
+U_j=\overline Y_j+q_JSE_j,
 $$
 
 где
