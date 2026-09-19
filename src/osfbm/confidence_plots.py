@@ -17,22 +17,27 @@ STATUS_LABELS = {
 }
 
 
-def plot_audit(audit_dir, H=0.3, output_dir=None, epsilon=None):
+def plot_audit(audit_dir, H=0.3, output_dir=None, epsilon=None, confidence=None):
     fresh = (Path(audit_dir) / "experiment.json").exists()
     if fresh:
         from osfbm.experiment import load_experiment
-        manifest, nodes, boundaries = load_experiment(audit_dir, epsilon=epsilon)
+        epsilon = 0.03 if epsilon is None else epsilon
+        confidence = 0.95 if confidence is None else confidence
+        manifest, nodes, boundaries = load_experiment(audit_dir, epsilon=epsilon, confidence=confidence)
     else:
+        if confidence is not None:
+            raise ValueError("confidence override is supported only for fresh experiments")
         manifest, nodes, boundaries = load_audit(audit_dir)
+        confidence = manifest["settings"]["confidence"]
     threshold = manifest["settings"]["epsilon"] if epsilon is None else epsilon
     output = Path(output_dir) if output_dir else Path(audit_dir) / "analysis"
     if fresh and output_dir is None:
-        output = output / f"epsilon_{threshold:g}"
+        output = output / f"epsilon_{threshold:g}" / f"confidence_{confidence:g}"
     output.mkdir(parents=True, exist_ok=True)
     nodes.to_csv(output / "values.csv", index=False)
     boundaries.to_csv(output / "boundaries.csv", index=False)
     epsilon = threshold
-    level = 100 * manifest["settings"]["confidence"]
+    level = 100 * confidence
     view = nodes[nodes.H.eq(H) & nodes.complete].sort_values("mu")
     fig, axes = plt.subplots(1, 2, figsize=(13, 4.5))
     for ax, prefix, value, title in zip(

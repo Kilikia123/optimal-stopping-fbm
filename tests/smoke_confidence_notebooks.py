@@ -57,17 +57,19 @@ MODE = "fresh"
 RUN_DIR = Path({str(source)!r})
 cfg = Config(n_fine=4, n_exercise=2, M_train=256, M_test=512, K=1,
              H_grid=(.3, .5), mu_grid=tuple(np.round(np.arange(-2, 2.01, .25), 6)))
-settings = ExperimentSettings(epsilon=.3, batch_size=128, M_validation=128)
+BATCH_SIZE = 128
+M_VALIDATION = 128
 """, directory / '03-executed.ipynb')
     execute('04-grid-analysis.ipynb', f"""
 RUN_ID = "smoke"
 ANALYSIS_MODE = "fresh"
 H = .3
 EPSILON = .3
+CONFIDENCE = .9
 RUN_DIR = Path({str(source)!r})
 """, directory / '04-executed.ipynb', forbid_computation=True)
     for name in ('values.csv', 'boundaries.csv', 'values_H_0.3.png', 'boundaries_ci.png'):
-        assert (source / 'analysis' / 'epsilon_0.3' / name).is_file(), name
+        assert (source / 'analysis' / 'epsilon_0.3' / 'confidence_0.9' / name).is_file(), name
     print(f'Separate-kernel notebook smoke passed: {directory}')
 
 
