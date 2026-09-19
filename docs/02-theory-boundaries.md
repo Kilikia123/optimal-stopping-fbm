@@ -34,7 +34,7 @@ $$E[\mu\tau+B^H_\tau]\le\mu t_1+E[\max_{1\le k\le N}B^H_{t_k}].$$
 **Правая граница при $H\ne1/2$ бесконечна.** Выберем любую промежуточную дату
 $t\in(0,T)$ и обозначим
 
-$$c=\operatorname{Cov}(B^H_t,B^H_T-B^H_t)
+$$c=\mathrm{Cov}(B^H_t,B^H_T-B^H_t)
 =\tfrac12(T^{2H}-t^{2H}-(T-t)^{2H}),\qquad
 Y=E[B^H_T-B^H_t\mid B^H_t]=\frac{c}{t^{2H}}B^H_t.$$
 
