@@ -1,4 +1,4 @@
-# План магистерской диссертации
+# Теория оптимальной остановки дробного броуновского движения
 
 **Тема:** нахождение оптимального момента продажи актива с учётом автокорреляционной структуры цены.
 
@@ -9,13 +9,13 @@
 
 ## Навигация
 
-| Файл | О чём | Тип работы |
+| Раздел | О чём | Тип работы |
 |---|---|---|
-| [01-problem-setup.md](01-problem-setup.md) | Модель цены, fBm, постановка задачи, нормировка | постановка |
-| [02-theory-boundaries.md](02-theory-boundaries.md) | Свойства $V(\mu,H)$, точные границы и практические $\mu_i^\varepsilon$, перекрытие областей | **теория (новизна)** |
-| [03-method-signatures.md](03-method-signatures.md) | Snell envelope, signatures, Longstaff–Schwartz, primal/dual | метод |
-| [04-numerics.md](04-numerics.md) | Численная оценка границ, сетки, валидация | вычисления |
-| [05-confidence-intervals.md](05-confidence-intervals.md) | Независимый тест стратегий, интервалы стоимости и сеточных границ μ | статистическая проверка |
+| [1. Постановка задачи](01-problem-setup.md) | Модель цены, fBm, постановка задачи, нормировка | постановка |
+| [2. Теория границ](02-theory-boundaries.md) | Свойства $V(\mu,H)$, точные и практические границы, перекрытие областей | теория |
+| [3. Метод сигнатур](03-method-signatures.md) | Snell envelope, signatures, Longstaff–Schwartz, primal/dual | метод |
+| [4. Численные методы](04-numerics.md) | Численная оценка границ, сетки, валидация | вычисления |
+| [5. Интервалы стоимости](05-confidence-intervals.md) | Независимая оценка стратегий и доверительные интервалы стоимости | статистика |
 
 ---
 
@@ -23,8 +23,6 @@
 
 - **Primal and dual optimal stopping with signatures** — Bayer, Pelizzari, Schoenmakers.
   <https://arxiv.org/abs/2312.03444>
-- Репозиторий авторов: **Optimal Stopping with Signatures**.
-  <https://github.com/lucapelizzari/Optimal_Stopping_with_signatures>
 - **Ton Dieker — Simulation of fractional Brownian motion**.
   <https://www.columbia.edu/~ad3217/fbm/thesis.pdf>
 
@@ -77,11 +75,3 @@
 | $M_{\text{train}},M_{\text{test}}$ | число обучающих и тестовых MC-траекторий |
 
 > **Про $a$ и $\mu$.** Это разные величины с разной размерностью: $a$ — только ненормированный drift цены, $\mu$ — только нормированный. Точные границы обозначаются $\mu_1(H),\mu_2(H)$, практические — $\mu_i^\varepsilon(H)$.
-
-## Ноутбуки
-
-- [01 — генерация](../notebooks/01-fbm.ipynb).
-- [02 — один узел](../notebooks/02-single-node.ipynb).
-- [03 — запуск сетки](../notebooks/03-grid.ipynb).
-- [04 — анализ сохранённого запуска](../notebooks/04-grid-analysis.ipynb).
-- [05 — проверки](../notebooks/05-checks.ipynb).
