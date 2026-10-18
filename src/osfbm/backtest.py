@@ -134,13 +134,33 @@ def max_drawdown(log_returns):
     return float(np.max(peak - wealth)) if len(wealth) else 0.0
 
 
+def downside_std(log_returns, target=0.0):
+    """Root mean square of the shortfalls below ``target`` (all months in the denominator)."""
+    r = np.asarray(log_returns, dtype=float)
+    short = np.minimum(r - target, 0.0)
+    return float(np.sqrt(np.mean(short ** 2))) if len(r) else np.nan
+
+
+def sortino(log_returns, target=0.0, per_year=PER_YEAR):
+    """Annualised Sortino ratio; NaN when no month falls below the target."""
+    r = np.asarray(log_returns, dtype=float)
+    down = downside_std(r, target)
+    return float((r.mean() - target) / down * np.sqrt(per_year)) if down > 0 else np.nan
+
+
 def summarize(result, strategies=STRATEGIES):
-    """Per-strategy monthly statistics; mean log reward is the model's objective."""
+    """Per-strategy monthly statistics; mean log reward is the model's objective.
+
+    ``cagr``, ``sharpe_annual``, ``sortino_annual`` and the drawdowns are the
+    second layer for a practitioner's reading. Months in cash earn zero, not the
+    risk-free rate, so the ratios are conservative for the model.
+    """
     rows = []
     for name in strategies:
         r = result[f"r_{name}"].to_numpy(float)
         n = len(r)
         mean, std = r.mean(), r.std(ddof=1) if n > 1 else np.nan
+        mdd = max_drawdown(r)
         invested = {"model": result["tau_day"] > 0,
                     "regimes_only": result["regime"] != CASH,
                     "sign_drift": result["a"] > 0,
@@ -149,8 +169,11 @@ def summarize(result, strategies=STRATEGIES):
         rows.append({
             "strategy": name, "months": n, "mean": mean, "std": std,
             "se": std / np.sqrt(n) if n > 1 else np.nan,
+            "cagr": float(np.expm1(mean * PER_YEAR)),
             "sharpe_annual": mean / std * np.sqrt(PER_YEAR) if std and std > 0 else np.nan,
-            "cum_log": r.sum(), "max_drawdown": max_drawdown(r),
+            "sortino_annual": sortino(r),
+            "cum_log": r.sum(), "max_drawdown": mdd,
+            "max_drawdown_pct": float(-np.expm1(-mdd)),
             "frac_invested": float(invested.mean()),
             "mean_tau_day": float(result["tau_day"].mean()) if name == "model" else np.nan,
         })

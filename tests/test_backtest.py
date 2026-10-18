@@ -7,8 +7,9 @@ import numpy as np
 import pandas as pd
 
 from osfbm import adapter
-from osfbm.backtest import (by_period, calibration, decide_block, hac_se, max_drawdown,
-                            paired_difference, run_backtest, summarize, window_search)
+from osfbm.backtest import (by_period, calibration, decide_block, downside_std, hac_se,
+                            max_drawdown, paired_difference, run_backtest, sortino, summarize,
+                            window_search)
 from osfbm.config import Config
 from osfbm.confidence import FixedPolicy
 from osfbm.data import block_frame, month_blocks
@@ -163,6 +164,11 @@ class BacktestWorkflowTests(unittest.TestCase):
         self.assertAlmostEqual(diff["mean_diff"], (res.r_model - res.r_buy_hold).mean())
         self.assertAlmostEqual(hac_se(np.ones(50)), 0.0)
         self.assertAlmostEqual(max_drawdown([1, -2, 1]), 2.0)
+        for strat in table.index:
+            self.assertAlmostEqual(table.loc[strat, "cagr"], np.expm1(12 * table.loc[strat, "mean"]))
+            self.assertAlmostEqual(table.loc[strat, "max_drawdown_pct"],
+                                   -np.expm1(-table.loc[strat, "max_drawdown"]))
+        self.assertTrue((table["max_drawdown_pct"].between(0, 1)).all())
         periods = by_period(res, freq="YS")
         self.assertEqual(periods["months"].sum(), len(res))
         cal = calibration(res, bins=3)
@@ -173,6 +179,21 @@ class BacktestWorkflowTests(unittest.TestCase):
                                        values=self.values)
         self.assertEqual(set(results), {200, 300})
         self.assertIn(table.attrs["chosen_window"], (200, 300))
+
+    def test_ratio_formulas_on_known_series(self):
+        r = np.array([0.02, -0.01, 0.03, -0.02, 0.0])
+        self.assertAlmostEqual(downside_std(r), np.sqrt((0.01 ** 2 + 0.02 ** 2) / 5))
+        self.assertAlmostEqual(sortino(r), r.mean() / downside_std(r) * np.sqrt(12))
+        self.assertTrue(np.isnan(sortino(np.array([0.01, 0.02]))))  # no month below target
+        frame = pd.DataFrame({"r_buy_hold": r, "r_model": r, "r_regimes_only": r, "r_sign_drift": r,
+                              "r_oracle": np.abs(r), "tau_day": 1, "regime": HOLD, "a": 1.0,
+                              "oracle_day": 1})
+        table = summarize(frame)
+        self.assertAlmostEqual(table.loc["buy_hold", "cagr"], np.expm1(12 * r.mean()))
+        self.assertAlmostEqual(table.loc["buy_hold", "sortino_annual"], sortino(r))
+        self.assertAlmostEqual(table.loc["buy_hold", "max_drawdown"], 0.02)
+        self.assertAlmostEqual(table.loc["buy_hold", "max_drawdown_pct"], -np.expm1(-0.02))
+        self.assertTrue(np.isnan(table.loc["oracle", "sortino_annual"]))
 
 
 if __name__ == "__main__":
