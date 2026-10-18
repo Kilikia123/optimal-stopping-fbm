@@ -178,19 +178,35 @@ class FixedPolicy:
     intercepts: np.ndarray
     stopped_at_zero: bool
 
-    def rewards(self, B, mu, cfg):
-        if self.stopped_at_zero:
-            return np.zeros(len(B))
-        X = adapter.drifted(B, mu, cfg)
+    def decide(self, X, cfg):
+        """Exercise-date index 0..n_exercise-1 chosen by the rule on each path.
+
+        X is the observed normalised path mu*t + B^H_t on the fine grid, shape
+        (M, n_fine+1). The rule stops at the first date where the fitted
+        continuation value does not exceed the payoff; the last date is forced.
+        The t=0 choice (``stopped_at_zero``) is not applied here.
+        """
+        X = np.asarray(X, dtype=float)
+        if X.ndim != 2 or X.shape[1] != cfg.n_fine + 1:
+            raise ValueError(f"X must have shape (M, {cfg.n_fine + 1})")
+        if self.coefficients.shape != (cfg.n_exercise - 1, cfg.sig_dim):
+            raise ValueError("Policy shape does not match the configuration")
         sig = adapter.signatures(X, cfg)
-        index = np.full(len(B), cfg.n_exercise - 1, dtype=int)
-        active = np.ones(len(B), dtype=bool)
+        index = np.full(len(X), cfg.n_exercise - 1, dtype=int)
+        active = np.ones(len(X), dtype=bool)
         for j in range(cfg.n_exercise - 1):
             k = cfg.exercise_index[j]
             continuation = sig[:, k, :] @ self.coefficients[j] + self.intercepts[j]
             stop = active & (continuation <= X[:, k])
             index[stop] = j
             active[stop] = False
+        return index
+
+    def rewards(self, B, mu, cfg):
+        if self.stopped_at_zero:
+            return np.zeros(len(B))
+        X = adapter.drifted(B, mu, cfg)
+        index = self.decide(X, cfg)
         return X[np.arange(len(B)), cfg.exercise_index[index]]
 
     def to_dict(self):

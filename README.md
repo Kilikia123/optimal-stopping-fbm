@@ -10,6 +10,18 @@
    `RUN_ID`: графики стоимости и границ μ с интервалами строятся без обучения.
    [Как считаются доверительные интервалы](docs/05-confidence-intervals.md).
 
+Практическая часть ([методика](docs/06-empirical.md)):
+
+1. `uv sync` — ставит `yfinance`.
+2. В [03-grid.ipynb](notebooks/03-grid.ipynb) запустите дневной прогон
+   `RUN_ID="daily21_train20k_test20k_v1"` (`n_exercise=n_fine=21`, μ ∈ [−4, 4]);
+   затем [04-grid-analysis.ipynb](notebooks/04-grid-analysis.ipynb) с тем же `RUN_ID`.
+3. [06-estimation.ipynb](notebooks/06-estimation.ipynb): загрузка S&P 500 в `data/`,
+   скользящие оценки a, σ, H, μ с бутстреп-интервалами на фоне границ μ₁(H), μ₂(H).
+4. [07-backtest.ipynb](notebooks/07-backtest.ipynb): синтетическая проверка,
+   бэктест против buy-and-hold, калибровка теории, выбор окна, чувствительность.
+   Результаты — в `result_optimal_stopping/empirical/`.
+
 Прежний расчёт сетки также доступен:
 
 1. В [03-grid.ipynb](notebooks/03-grid.ipynb) выберите `MODE="grid"`, задайте `mu_grid`, `H_grid` и
