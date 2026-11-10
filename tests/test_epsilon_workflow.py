@@ -13,10 +13,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from osfbm import adapter, results
-from osfbm.boundaries import boundaries_from_scan
-from osfbm.config import Config
-from osfbm.core import NodeResult
+import adapter
+import experiments.legacy_grid as results
+from boundary_analysis.fixed import boundaries_from_scan
+from config import Config
+from core import NodeResult
+from experiments.training import run_experiment
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -124,8 +126,8 @@ class SavedRunTest(unittest.TestCase):
     def execute_notebook(self, name, overrides=None):
         notebook = json.loads((ROOT / "notebooks" / name).read_text())
         namespace = {"__name__": "__main__"}
-        with patch.object(Path, "cwd", return_value=self.root), \
-             patch.object(plt, "show"), contextlib.redirect_stdout(io.StringIO()), \
+        with patch.object(Path, "cwd", return_value=self.root),\
+             patch.object(plt, "show"), contextlib.redirect_stdout(io.StringIO()),\
              contextlib.redirect_stderr(io.StringIO()):
             for index, c in enumerate(notebook["cells"]):
                 if c["cell_type"] != "code":
@@ -133,6 +135,9 @@ class SavedRunTest(unittest.TestCase):
                 source = "".join(c["source"])
                 if overrides and ("cfg = Config(" in source or source.startswith("RUN_ID =")):
                     namespace.update(overrides)
+                    continue
+                if overrides and source.startswith("H =") and "H" in overrides:
+                    namespace["H"] = overrides["H"]
                     continue
                 exec(compile(source, f"{name}:cell{index}", "exec"), namespace)
         plt.close("all")
@@ -150,38 +155,37 @@ class SavedRunTest(unittest.TestCase):
 
     def test_notebooks_calculate_then_analyze_without_training(self):
         self.execute_notebook("03-grid.ipynb", {
-            "cfg": self.cfg, "RUN_ID": "smoke", "RUN_DIR": self.run,
+            "MODE": "fresh", "cfg": self.cfg, "RUN_ID": "smoke", "RUN_DIR": self.run,
+            "BATCH_SIZE": 40, "M_VALIDATION": 40, "COLLECT_PAIRED": True,
         })
-        with patch.object(adapter, "simulate_pair", side_effect=AssertionError("analysis simulates")), \
-             patch.object(results, "value_at", side_effect=AssertionError("analysis trains")):
-            state = self.execute_notebook("04-grid-analysis.ipynb", {
-                "RUN_ID": "smoke", "H": 0.3, "EPSILON": 0.01,
-            })
-            other = self.execute_notebook("04-grid-analysis.ipynb", {
-                "RUN_ID": "smoke", "H": 0.5, "EPSILON": 0.2,
-            })
-        self.assertEqual(len(state["summary"]), 1)
-        self.assertTrue(state["view"]["H"].eq(0.3).all())
-        self.assertTrue(other["view"]["H"].eq(0.5).all())
-        self.assertTrue(other["summary"]["epsilon"].eq(0.2).all())
-        for h, epsilon in ((0.3, 0.01), (0.5, 0.2)):
-            directory = self.run / "analysis" / f"H_{h}" / f"epsilon_{epsilon}"
+        common = {"RUN_ID": "smoke", "RUN_DIR": self.run,
+                  "BOUNDARY_MODE": "fixed", "CONFIDENCE": .95, "RECOMPUTE_PAIRED": False}
+        with patch.object(adapter, "simulate_paths", side_effect=AssertionError("analysis simulates")),\
+             patch("experiments.training.train_policy", side_effect=AssertionError("analysis trains")):
+            state = self.execute_notebook("04-grid-analysis.ipynb", common | {"H": .3, "EPSILON": .01})
+            other = self.execute_notebook("04-grid-analysis.ipynb", common | {"H": .5, "EPSILON": .2})
+        self.assertEqual(len(state["boundary_values"]), 2)
+        self.assertTrue(state["view"]["H"].eq(.3).all())
+        self.assertTrue(other["view"]["H"].eq(.5).all())
+        for h, epsilon in ((.3, .01), (.5, .2)):
+            directory = self.run / "analysis" / f"epsilon_{epsilon:g}" / "confidence_0.95"
             self.assertTrue((directory / "boundaries.csv").exists())
-            self.assertTrue((directory / "values.png").exists())
-            self.assertTrue((directory / "diagnostics.png").exists())
-        self.assertEqual(len(list((self.run / "analysis").glob("*/*/boundaries.csv"))), 2)
+            self.assertTrue((directory / "boundaries.png").exists())
+            self.assertTrue((directory / f"H_{h:g}" / f"values_H_{h:g}.png").exists())
 
     def test_analysis_marks_partial_run(self):
-        def interrupt(node):
-            raise RuntimeError("interrupted")
+        def interrupt(event):
+            if event['stage'] == 'test':
+                raise RuntimeError("interrupted")
         with self.assertRaises(RuntimeError):
-            results.run_grid(self.cfg, self.run, progress=interrupt)
-        with patch.object(adapter, "simulate_pair", side_effect=AssertionError("analysis simulates")):
+            run_experiment(self.cfg, self.run, batch_size=40, M_validation=40, progress=interrupt)
+        with patch.object(adapter, "simulate_paths", side_effect=AssertionError("analysis simulates")):
             state = self.execute_notebook("04-grid-analysis.ipynb", {
-                "RUN_ID": "smoke", "H": 0.3, "EPSILON": 0.01,
+                "RUN_ID": "smoke", "RUN_DIR": self.run, "H": .3, "EPSILON": .01,
+                "BOUNDARY_MODE": "fixed", "CONFIDENCE": .95, "RECOMPUTE_PAIRED": False,
             })
         self.assertLess(len(state["view"]), len(self.cfg.mu_grid))
-        self.assertTrue(state["summary"]["note"].str.contains("Неполная сетка").all())
+        self.assertTrue(state["diagnostics"]["mu1_status"].str.contains("Неполная сетка").all())
 
 
 if __name__ == "__main__":

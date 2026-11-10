@@ -11,16 +11,25 @@
    [Как считаются доверительные интервалы](docs/05-confidence-intervals.md).
 
 Практическая часть ([методика](docs/06-empirical.md)). Нужен завершённый прогон с
-21 датой решения (например, `daily21_21_train20k_test20k_v1`) и его границы из
-[04-grid-analysis.ipynb](notebooks/04-grid-analysis.ipynb) при выбранном `EPSILON`.
+21 датой решения (например, `daily21_21_train20k_test20k_v1`) и парными моментами:
+они собираются новым 03 или отдельным пересчётом старого прогона в 04.
+06 готовит границы всех α сам из этих моментов; выгружать каждый α в 04 не нужно.
 
 1. `uv sync` — ставит `yfinance`.
-2. [06-estimation.ipynb](notebooks/06-estimation.ipynb): задайте `RUN_ID` и `EPSILON`;
-   загрузка S&P 500 в `data/`, скользящие оценки a, σ, H, μ с бутстреп-интервалами
-   на фоне границ μ₁(H), μ₂(H).
-3. [07-backtest.ipynb](notebooks/07-backtest.ipynb) с теми же `RUN_ID` и `EPSILON`:
-   синтетическая проверка, бэктест против buy-and-hold, калибровка, выбор окна,
-   чувствительность. Результаты — в `result_optimal_stopping/empirical/<RUN_ID>/`.
+2. [06-estimation.ipynb](notebooks/06-estimation.ipynb): задайте банк `RUN_ID` и новый
+   `TUNING_ID`. Подбор трёх раздельных окон, метода H и α выполняется только на
+   синтетике: coarse → validation → фиксация → независимый test. Полные границы
+   и победитель сохраняются в `result_optimal_stopping/synthetic_tuning/<TUNING_ID>/`.
+   В ноутбуке задан усиленный профиль: 16/64/128 реплик для coarse/validation/test,
+   top_k=30, `TUNING_ID="separate_windows_validation64_v2"`. Поиск идёт строго
+   по трём спискам окон, без дополнительных общих вариантов. Для нового алгоритма
+   нужен новый прогон; файлы прежних экспериментов сохраняются.
+   Итоговые границы с выбранным α и отметками интерполяции — `final_boundaries.png`.
+3. [07-backtest.ipynb](notebooks/07-backtest.ipynb): укажите тот же `TUNING_ID`.
+   Загружается фиксированная модель, выполняются рыночный бэктест и диагностика
+   параметров без нового выбора окон. Результаты — в
+   `result_optimal_stopping/empirical/frozen/<TUNING_ID>/`. Исследовательский
+   перебор на рынке отдельно включается `RUN_RESEARCH=True` и не меняет выбор 06.
 
 Прежний расчёт сетки также доступен:
 

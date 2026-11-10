@@ -6,9 +6,10 @@ from unittest.mock import patch
 import numpy as np
 import pandas as pd
 
-from osfbm import adapter
-from osfbm.config import Config
-from osfbm.experiment import train_policy, run_experiment, load_experiment
+import adapter
+from config import Config
+from experiments.statistics import load_experiment
+from experiments.training import train_policy, run_experiment
 
 
 class FreshExperimentTests(unittest.TestCase):
@@ -58,8 +59,8 @@ class FreshExperimentTests(unittest.TestCase):
         directory = Path(self.tmp.name) / 'analysis'
         run_experiment(self.cfg, directory, **self.execution)
         before = {p: p.read_bytes() for p in directory.rglob('*.json')}
-        with patch.object(adapter, 'simulate_paths', side_effect=AssertionError('simulation')), \
-             patch('osfbm.experiment.train_policy', side_effect=AssertionError('training')):
+        with patch.object(adapter, 'simulate_paths', side_effect=AssertionError('simulation')),\
+             patch('experiments.training.train_policy', side_effect=AssertionError('training')):
             _, low, first = load_experiment(directory, epsilon=.1, confidence=.8)
             _, high, second = load_experiment(directory, epsilon=.2, confidence=.99)
         pd.testing.assert_frame_equal(low[['V', 'SE']], high[['V', 'SE']])

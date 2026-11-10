@@ -1,0 +1,22 @@
+{
+  "training": {
+    "original": "9acff226a035c6a4722101dc4e4c29a61436a0ab77986839716896e850e5a3ec",
+    "refactored": "91327268322a1e97e29306f16fddf857609fe39f1520c6998b2facf3438a0053"
+  },
+  "paired": {
+    "original": "ef2ba0df4d9a190754372927e2aea1339b9e179c68495cd22208da738a0b309b",
+    "refactored": "6acd929db37326e12e64a5dcf4855e69dbc0fee6f3e7866822460b28a80b4b66"
+  },
+  "audit": {
+    "original": "d419bc5faa5d010b290aecc1ba41b692fa5af8789cacbfdb76b8f5ecd90839db",
+    "refactored": "f5208109c6dddb0b8bb105877876007077d7efc62f71fc070b7f3be706b9a9d4"
+  },
+  "tuning": {
+    "original": "7cda334897ac7c787b7e281d5b5ba37d0f2095ab90839e53d18319a3f32e5d2b",
+    "refactored": "d08d5605a6f319c44baf373e1f94f9207cb848d8158b988e55fb8ec53c963467"
+  },
+  "action": {
+    "original": "5b9e6d069e135711af867d364d710d42b9b3b3a47dee7508c400bec296ea627a",
+    "refactored": "42370b3b09cc2046818427c598e0931e68eab05f412fe388c80919626ea2de46"
+  }
+}

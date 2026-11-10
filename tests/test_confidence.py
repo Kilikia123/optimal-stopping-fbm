@@ -7,11 +7,13 @@ import numpy as np
 import pandas as pd
 from scipy.stats import t
 
-from osfbm import adapter
-from osfbm.config import Config
-from osfbm.results import run_grid
-from osfbm.confidence import (AuditConfig, Moments, FixedPolicy, prepare_audit,
-                              run_audit, load_audit, invert_band)
+import adapter
+from config import Config
+from experiments.legacy_grid import run_grid
+from boundary_analysis.inversion import invert_band
+from experiments.audit import AuditConfig, prepare_audit, run_audit, load_audit
+from experiments.moments import Moments
+from experiments.policy import FixedPolicy
 
 
 class IntervalTests(unittest.TestCase):

@@ -6,16 +6,18 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from osfbm import adapter
-from osfbm.backtest import (by_period, calibration, decide_block, downside_std, hac_se,
-                            max_drawdown, paired_difference, run_backtest, sortino, summarize,
-                            window_search)
-from osfbm.config import Config
-from osfbm.confidence import FixedPolicy
-from osfbm.data import block_frame, month_blocks
-from osfbm.estimation import estimate, simulate_log_prices
-from osfbm.experiment import run_experiment
-from osfbm.policy_bank import CASH, HOLD, POLICY, Boundaries, PolicyBank, ValueTable, point_boundaries
+import adapter
+from market.backtest import decide_block, run_backtest, window_search
+from market.metrics import by_period, calibration, downside_std, max_drawdown, sortino, summarize
+from market.statistics import hac_se, paired_difference
+from config import Config
+from experiments.policy import FixedPolicy
+from market.data import block_frame, month_blocks
+from estimation.pipeline import estimate
+from estimation.simulation import simulate_log_prices
+from experiments.training import run_experiment
+from boundary_analysis.curves import CASH, HOLD, POLICY, Boundaries, point_boundaries
+from experiments.policy_bank import PolicyBank, ValueTable
 
 D = 4  # tiny month for speed; the estimation window is still long
 
@@ -117,10 +119,27 @@ class BacktestWorkflowTests(unittest.TestCase):
         self.assertTrue(0 <= middle.tau_day <= D)
         self.assertEqual((middle.node_H, middle.node_mu), (0.7, 0.0))
 
+    def test_relative_boundary_provenance_and_local_tolerance(self):
+        from dataclasses import replace
+        boundary = replace(self.boundaries, epsilon=None, mode='relative', gain_mode='paired',
+                           alpha=.2, source='relative_paired/boundaries.csv',
+                           epsilon_values=np.full(len(self.boundaries.H), .03))
+        res = run_backtest(self.logp, self.dates, window=300, D=D, bank=self.bank,
+                           boundaries=boundary, values=self.values)
+        self.assertTrue(res.boundary_mode.eq('relative').all())
+        self.assertTrue(res.boundary_gain_mode.eq('paired').all())
+        self.assertTrue(res.boundary_source.eq(boundary.source).all())
+        np.testing.assert_allclose(res.boundary_alpha, .2)
+        np.testing.assert_allclose(res.boundary_epsilon, .03)
+        self.assertIsNone(res.attrs['epsilon'])
+
     def test_no_look_ahead_and_accounting(self):
         window = 300
         res = run_backtest(self.logp, self.dates, window=window, D=D, bank=self.bank,
                            boundaries=self.boundaries, values=self.values)
+        self.assertTrue(res.boundary_mode.eq('fixed').all())
+        np.testing.assert_allclose(res.boundary_epsilon, self.boundaries.epsilon)
+        self.assertEqual(res.attrs['boundary_mode'], 'fixed')
         self.assertEqual(len(res), len(month_blocks(len(self.logp), D, window)))
         # Perturb everything after the end of block 5: earlier rows must not change.
         cut = int(res.loc[5, "end_idx"])

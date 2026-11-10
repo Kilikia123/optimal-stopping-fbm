@@ -3,8 +3,11 @@ import unittest
 
 import numpy as np
 
-from osfbm.estimation import (bootstrap_estimates, detrend, dfa_hurst, estimate,
-                              log_returns, percentile_ci, rs_hurst, simulate_log_prices)
+from estimation.hurst import dfa_hurst, rs_hurst
+from estimation.pipeline import estimate
+from estimation.preprocessing import detrend, log_returns
+from estimation.simulation import simulate_log_prices
+from estimation.uncertainty import bootstrap_estimates, percentile_ci
 
 D = 21
 
