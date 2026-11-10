@@ -65,7 +65,7 @@ class AnalysisLoadingTests(unittest.TestCase):
         self.assertEqual(b.diagnostics().unconfirmed.tolist(),[0,0])
 
     def test_missing_and_stale_metadata(self):
-        with self.assertRaisesRegex(FileNotFoundError,'04'):
+        with self.assertRaisesRegex(FileNotFoundError,'analyze_relative_run'):
             Boundaries.from_analysis(self.root)
         out=self.export()
         p=out/'metadata.json'; m=json.loads(p.read_text()); m['experiment_identity']='stale'

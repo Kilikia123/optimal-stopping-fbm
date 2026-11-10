@@ -178,7 +178,7 @@ def _attach_paired_statistics(directory, manifest, nodes, confidence):
         if inline_seen:
             return _merge_paired(nodes, inline, digest([source_identity, "inline_paired"]))
         raise FileNotFoundError(
-            "No paired statistics. Run run_paired_evaluation in notebook 04 first; notebook 03 is not needed."
+            "No paired statistics. Run run_paired_evaluation using the optional paired-statistics cell in notebook 03; training is not needed."
         )
     replay = json.loads(path.read_text())
     if replay["source_identity"] != digest(manifest) or replay["schema_version"] != 1:

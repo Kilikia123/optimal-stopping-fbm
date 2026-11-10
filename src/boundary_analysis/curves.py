@@ -14,7 +14,7 @@ CASH, HOLD, POLICY = "cash", "hold", "policy"
 
 
 def point_boundaries(nodes, mu_grid, epsilon):
-    """Practical boundaries per H from a node table, as in 04-grid-analysis.
+    """Practical boundaries per H from a node table, from saved experiment statistics.
 
     mu_1: last grid node with V <= eps before leaving the region;
     mu_2: first node with V - mu*T <= eps after entering it. NaN when the
@@ -103,7 +103,7 @@ class Boundaries:
         )
         if not path.exists():
             raise FileNotFoundError(
-                f"Нет границ {path}. Выполните анализ 04 с выбранными параметрами."
+                f"Нет границ {path}. Подготовьте выгрузку через analyze_relative_run с выбранными параметрами."
             )
         frame = pd.read_csv(path).sort_values("H").reset_index(drop=True)
         manifest = json.loads((directory / "experiment.json").read_text())

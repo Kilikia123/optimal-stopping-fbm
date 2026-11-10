@@ -83,7 +83,7 @@ class PairedTests(unittest.TestCase):
 
     def test_missing_partial_and_changed_sources_are_not_silently_used(self):
         self.prepare()
-        with self.assertRaisesRegex(FileNotFoundError,'notebook 04'):
+        with self.assertRaisesRegex(FileNotFoundError,'notebook 03'):
             load_experiment_statistics(self.path,gain_mode='paired')
         run_paired_evaluation(self.path,H_values=[.5])
         _, nodes=load_experiment_statistics(self.path,gain_mode='paired')

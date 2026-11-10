@@ -13,7 +13,7 @@ from infrastructure.identity import digest
 from visualization.relative import plot_relative_boundaries
 
 ACTIONS = {
-    "incomplete_paired_test": "Завершить парный пересчёт сохранённых стратегий в notebook 04",
+    "incomplete_paired_test": "Завершить парный пересчёт сохранённых стратегий в необязательном разделе парной статистики notebook 03",
     "missing_zero": "Добавить узел μ=0",
     "incomplete_test": "Завершить сетку и тестовую выборку",
     "insufficient_precision": "Увеличить независимую тестовую выборку; проверить обучение",

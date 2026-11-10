@@ -217,7 +217,7 @@ class PipelineTests(unittest.TestCase):
             if e['stage']=='test':raise RuntimeError('interrupt audit')
         with self.assertRaises(RuntimeError):self.run_tuning(output,progress=stop)
         self.assertTrue((output/'frozen.json').exists())
-        with self.assertRaisesRegex(FileNotFoundError,'notebook 06'):
+        with self.assertRaisesRegex(FileNotFoundError,'notebook 04'):
             load_frozen_selection(output)
         self.run_tuning(output)
         load_frozen_selection(output)

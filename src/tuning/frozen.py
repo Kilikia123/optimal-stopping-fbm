@@ -117,7 +117,7 @@ def load_frozen_selection(path, *, run_dir=None):
     audit_path = path.parent / "test_complete.json"
     if not audit_path.exists():
         raise FileNotFoundError(
-            "Finish the independent synthetic test in notebook 06 before using 07"
+            "Finish the independent synthetic test in notebook 04 before using 05"
         )
     audit = json.loads(audit_path.read_text())
     if audit["frozen_identity"] != digest(frozen) or audit["test_ranking_hash"] != digest(

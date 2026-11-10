@@ -71,7 +71,7 @@ from visualization.boundaries import plot_final_boundaries
 - `validation`: соответствие сохранённых результатов выбранной конфигурации.
 - `hurst_diagnostics`: результат полной стратегии по группам оценённого H.
 
-`action_audit` — архивная диагностика дополнительных действий; в текущем 07
+`action_audit` — архивная диагностика дополнительных действий; в текущем 05
 не используется. Рефакторинг не возвращает её в рабочий анализ.
 
 ## Графики — `visualization`
@@ -103,9 +103,9 @@ from visualization.boundaries import plot_final_boundaries
 |---|---|
 | 01–02 | `adapter`, `core`, `experiments.checks`, `experiments.legacy_grid` |
 | 03 | `experiments.configuration` → `training` → `statistics` |
-| 04 | `experiments.statistics` → `boundary_analysis` → `visualization` |
-| 06 | `tuning.runner` → `tuning.frozen` → `visualization` |
-| 07 | `tuning.frozen` → `estimation` → `market.backtest` → анализ и графики |
+| 04 | `tuning.runner` → `tuning.frozen` → `visualization` |
+| 05 | `tuning.frozen` → `estimation` → `market.backtest` → анализ и графики |
+| 06 | сохранённые узлы и границы → аналитические эталоны → графики |
 
 Работа из исходников требует `src` в `sys.path` / `PYTHONPATH`. Текущая editable
 среда уже включает эту папку. Настройка сборки установочного пакета в

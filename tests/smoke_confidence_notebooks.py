@@ -1,4 +1,4 @@
-"""Execute both updated audit notebooks in separate real Jupyter kernels.
+"""Execute the training notebook and saved-statistics analysis in separate Jupyter kernels.
 
 Run: MPLCONFIGDIR=/tmp/osfbm-mpl .venv/bin/python tests/smoke_confidence_notebooks.py
 Artifacts are saved under result_optimal_stopping/ci_smoke/.
@@ -16,7 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def execute(name, replacement, output, forbid_computation=False):
-    notebook = nbformat.read(ROOT / 'notebooks' / name, as_version=4)
+    notebook = (nbformat.read(ROOT / 'notebooks' / name, as_version=4) if name
+                else nbformat.v4.new_notebook(cells=[nbformat.v4.new_code_cell(replacement)]))
     for cell in notebook.cells:
         if cell.cell_type == 'code' and (
                 'cfg = Config(' in cell.source or cell.source.startswith('RUN_ID =')):
@@ -61,30 +62,19 @@ cfg = Config(n_fine=4, n_exercise=2, M_train=256, M_test=512, K=1,
 BATCH_SIZE = 128
 M_VALIDATION = 128
 """, directory / '03-executed.ipynb')
-    execute('04-grid-analysis.ipynb', f"""
-RUN_ID = "smoke"
-BOUNDARY_MODE = "fixed"
-RECOMPUTE_PAIRED = False
-H = .3
-EPSILON = .3
-CONFIDENCE = .9
-RUN_DIR = Path({str(source)!r})
-""", directory / '04-executed.ipynb', forbid_computation=True)
-    for name in ('values.csv', 'boundaries.csv', 'boundaries.png'):
-        assert (source / 'analysis' / 'epsilon_0.3' / 'confidence_0.9' / name).is_file(), name
-    execute('04-grid-analysis.ipynb', f"""
-RUN_ID = "smoke"
-BOUNDARY_MODE = "relative"
-RECOMPUTE_PAIRED = False
-GAIN_MODE = "legacy"
-ALPHA = .2
-INCLUDE_UNCONFIRMED = True
-ALPHA_SENSITIVITY = (.1, .2, .3)
-CONFIDENCE = .9
-RUN_DIR = Path({str(source)!r})
-""", directory / '04-relative-executed.ipynb', forbid_computation=True)
+    execute(None, f"""
+from pathlib import Path
+from experiments.statistics import load_experiment
+from boundary_analysis.reporting import analyze_relative_run
+source = Path({str(source)!r})
+_, nodes, fixed = load_experiment(source, epsilon=.3, confidence=.9)
+assert nodes.complete.all()
+assert len(fixed) == 4
+analyze_relative_run(source, alpha=.2, confidence=.9,
+                     sensitivity=(.1, .2, .3), gain_mode="paired")
+""", directory / 'analysis-executed.ipynb', forbid_computation=True)
     for name in ('boundaries.csv', 'diagnostics.csv', 'metadata.json', 'boundaries.png', 'epsilon.png'):
-        assert (source / 'analysis' / 'relative' / 'alpha_0.2' / 'confidence_0.9' / name).is_file(), name
+        assert (source / 'analysis' / 'relative_paired' / 'alpha_0.2' / 'confidence_0.9' / name).is_file(), name
     print(f'Separate-kernel notebook smoke passed: {directory}')
 
 

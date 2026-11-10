@@ -18,6 +18,7 @@ import experiments.legacy_grid as results
 from boundary_analysis.fixed import boundaries_from_scan
 from config import Config
 from core import NodeResult
+from experiments.statistics import load_experiment
 from experiments.training import run_experiment
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -153,25 +154,21 @@ class SavedRunTest(unittest.TestCase):
         self.assertEqual(path.read_bytes(), original)
         self.assertFalse(list(self.run.glob("*.tmp")))
 
-    def test_notebooks_calculate_then_analyze_without_training(self):
+    def test_notebook_calculates_then_library_analyzes_without_training(self):
         self.execute_notebook("03-grid.ipynb", {
             "MODE": "fresh", "cfg": self.cfg, "RUN_ID": "smoke", "RUN_DIR": self.run,
             "BATCH_SIZE": 40, "M_VALIDATION": 40, "COLLECT_PAIRED": True,
         })
-        common = {"RUN_ID": "smoke", "RUN_DIR": self.run,
-                  "BOUNDARY_MODE": "fixed", "CONFIDENCE": .95, "RECOMPUTE_PAIRED": False}
         with patch.object(adapter, "simulate_paths", side_effect=AssertionError("analysis simulates")),\
              patch("experiments.training.train_policy", side_effect=AssertionError("analysis trains")):
-            state = self.execute_notebook("04-grid-analysis.ipynb", common | {"H": .3, "EPSILON": .01})
-            other = self.execute_notebook("04-grid-analysis.ipynb", common | {"H": .5, "EPSILON": .2})
-        self.assertEqual(len(state["boundary_values"]), 2)
-        self.assertTrue(state["view"]["H"].eq(.3).all())
-        self.assertTrue(other["view"]["H"].eq(.5).all())
-        for h, epsilon in ((.3, .01), (.5, .2)):
-            directory = self.run / "analysis" / f"epsilon_{epsilon:g}" / "confidence_0.95"
-            self.assertTrue((directory / "boundaries.csv").exists())
-            self.assertTrue((directory / "boundaries.png").exists())
-            self.assertTrue((directory / f"H_{h:g}" / f"values_H_{h:g}.png").exists())
+            _, nodes, boundaries = load_experiment(self.run, epsilon=.01)
+            _, other_nodes, other_boundaries = load_experiment(self.run, epsilon=.2)
+        self.assertTrue(nodes.complete.all())
+        self.assertEqual(len(nodes), len(self.cfg.H_grid) * len(self.cfg.mu_grid))
+        self.assertEqual(len(boundaries), 2 * len(self.cfg.H_grid))
+        pd.testing.assert_frame_equal(nodes, other_nodes)
+        self.assertTrue(boundaries.epsilon.eq(.01).all())
+        self.assertTrue(other_boundaries.epsilon.eq(.2).all())
 
     def test_analysis_marks_partial_run(self):
         def interrupt(event):
@@ -180,12 +177,9 @@ class SavedRunTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             run_experiment(self.cfg, self.run, batch_size=40, M_validation=40, progress=interrupt)
         with patch.object(adapter, "simulate_paths", side_effect=AssertionError("analysis simulates")):
-            state = self.execute_notebook("04-grid-analysis.ipynb", {
-                "RUN_ID": "smoke", "RUN_DIR": self.run, "H": .3, "EPSILON": .01,
-                "BOUNDARY_MODE": "fixed", "CONFIDENCE": .95, "RECOMPUTE_PAIRED": False,
-            })
-        self.assertLess(len(state["view"]), len(self.cfg.mu_grid))
-        self.assertTrue(state["diagnostics"]["mu1_status"].str.contains("Неполная сетка").all())
+            _, nodes, boundaries = load_experiment(self.run, epsilon=.01)
+        self.assertLess(len(nodes[nodes.complete]), len(self.cfg.H_grid) * len(self.cfg.mu_grid))
+        self.assertTrue(boundaries.status.eq("incomplete_test").all())
 
 
 if __name__ == "__main__":
