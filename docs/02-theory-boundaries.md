@@ -452,7 +452,7 @@ $$
 конечномерных гауссовских распределений. Для положительных $s,t$
 
 $$
-\lim_{H\downarrow0}\operatorname{Cov}(B_s^H,B_t^H)
+\lim_{H\downarrow0}\mathrm{Cov}(B_s^H,B_t^H)
 =\begin{cases}
 1,&s=t,\\
 1/2,&s\ne t.
@@ -498,7 +498,7 @@ Bayer, Hager, Riedel, Schoenmakers,
 $$
 m_k:=E[U\mid\mathcal F_k]
 =\frac{1}{k+1}\sum_{i=1}^{k}B_i^0,\qquad
-\operatorname{Var}(U\mid\mathcal F_k)=\frac{1}{2(k+1)},
+\mathrm{Var}(U\mid\mathcal F_k)=\frac{1}{2(k+1)},
 \qquad m_0=0.
 $$
 

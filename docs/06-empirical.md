@@ -20,7 +20,7 @@ $$
 По ковариации fBm из главы 1
 
 $$
-E[r_j]=a\Delta,\qquad \operatorname{Var}(r_j)=\sigma^2\Delta^{2H}.
+E[r_j]=a\Delta,\qquad \mathrm{Var}(r_j)=\sigma^2\Delta^{2H}.
 $$
 
 ```text
@@ -59,7 +59,7 @@ a_hat = mean(приращений окна сноса) / Delta
 приращение fBm. Поэтому для окна из W наблюдений
 
 $$
-\operatorname{Var}(\widehat a)
+\mathrm{Var}(\widehat a)
 =\sigma^2\Delta^{2H-2}W^{2H-2}.
 $$
 
@@ -254,7 +254,7 @@ $$
 Для сравнения с удержанием используем парные разности на тех же блоках:
 
 $$
-d_b=L_b^{(\rm strategy)}-L_b^{(\rm hold)},\qquad
+d_b=L_b^{(\mathrm{strategy})}-L_b^{(\mathrm{hold})},\qquad
 \overline d=\frac1B\sum_bd_b.
 $$
 

@@ -59,7 +59,7 @@ epsilon_hat(H) = alpha * v_hat(0,H)
 Награда остановки сразу равна нулю на каждой траектории:
 
 $$
-Q_i^{\rm left}=0,\qquad D_i^{\rm left}=R_i-0=R_i.
+Q_i^{\mathrm{left}}=0,\qquad D_i^{\mathrm{left}}=R_i-0=R_i.
 $$
 
 Следовательно, оценка преимущества — обычное среднее награды. Условие
@@ -88,7 +88,7 @@ $$
 Среднее разностей оценивает ожидаемое преимущество стратегии:
 
 $$
-\widehat g_{\rm paired}(\mu,H)=\frac1M\sum_iD_i,
+\widehat g_{\mathrm{paired}}(\mu,H)=\frac1M\sum_iD_i,
 \qquad E[D_i]=v_\pi(\mu,H)-\mu T.
 $$
 
@@ -104,8 +104,8 @@ right_gain_hat = mean(D_i)
 Уменьшение дисперсии зависит от ковариации наград:
 
 $$
-\operatorname{Var}(D)=\operatorname{Var}(R)+\operatorname{Var}(Q)
--2\operatorname{Cov}(R,Q).
+\mathrm{Var}(D)=\mathrm{Var}(R)+\mathrm{Var}(Q)
+-2\mathrm{Cov}(R,Q).
 $$
 
 Снижение дисперсии не гарантировано для произвольной стратегии.
@@ -115,8 +115,8 @@ $$
 Альтернативная оценка вычитает теоретическое среднее удержания:
 
 $$
-\widehat g_{\rm legacy}=\widehat v_\pi-\mu T,
-\qquad \widehat g_{\rm legacy}=\widehat g_{\rm paired}
+\widehat g_{\mathrm{legacy}}=\widehat v_\pi-\mu T,
+\qquad \widehat g_{\mathrm{legacy}}=\widehat g_{\mathrm{paired}}
 +\frac1M\sum_i B_T^{H,(i)}.
 $$
 
@@ -135,12 +135,12 @@ paired_gain_hat = mean(R_i - Q_i)
 Исходные переходы определяются условиями
 
 $$
-\widehat\mu_{1,\rm raw}
+\widehat\mu_{1,\mathrm{raw}}
 =\max\{u_j:\widehat v_\pi(u_j,H)\le\widehat\varepsilon(H)\},
 $$
 
 $$
-\widehat\mu_{2,\rm raw}
+\widehat\mu_{2,\mathrm{raw}}
 =\min\{u_j:\widehat g(u_j,H)\le\widehat\varepsilon(H)\}.
 $$
 

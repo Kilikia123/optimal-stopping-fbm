@@ -54,7 +54,7 @@ $$
 из итерированных интегралов
 
 $$
-\operatorname{Sig}(\widehat X)_{[0,t]}
+\mathrm{Sig}(\widehat X)_{[0,t]}
 =\left(1,\int_0^t d\widehat X_{u_1},
 \int_{0<u_1<u_2<t}d\widehat X_{u_1}\otimes d\widehat X_{u_2},\ldots\right).
 $$
@@ -70,7 +70,7 @@ $$
 
 $$
 \widehat C_k=\theta_k^\top
-\operatorname{Sig}^{\le K}(\widehat X)_{[0,t_k]}.
+\mathrm{Sig}^{\le K}(\widehat X)_{[0,t_k]}.
 $$
 
 ```text
