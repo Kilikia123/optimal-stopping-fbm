@@ -180,8 +180,8 @@ $\widehat\varepsilon=\alpha\widehat v_{\pi_{0,H}}(0,H)$.
 покрываемых ожидаемых величин. Полоса Бонферрони для среднего Y имеет вид
 
 $$
-[L,U]=[\overline R-q\,SE,\overline R+q\,SE],\qquad
-q=t_{M-1;\,1-(1-c)/(2F)}.
+[L,U]=[\overline R-q\cdot SE,\overline R+q\cdot SE],\qquad
+q=t_{M-1;\,1-\frac{1-c}{2F}}.
 $$
 
 Y здесь может быть наградой стратегии или парной разностью. Квантили
