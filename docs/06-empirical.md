@@ -161,7 +161,7 @@ $$
 $$
 p_b(j)=a_b+c_bj,\qquad
 (\widehat a_b,\widehat c_b)
-=\operatorname*{arg\,min}_{a,c}\sum_{j=1}^n(Y_{b,j}-a-cj)^2.
+=\mathop{\mathrm{arg\,min}}_{a,c}\sum_{j=1}^n(Y_{b,j}-a-cj)^2.
 $$
 
 Здесь $a_b,c_b$ — коэффициенты локальной прямой; $a_b$ не является оценкой
